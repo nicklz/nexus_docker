@@ -47,7 +47,7 @@ dbrestore:
 
 uli:
 	@echo "Getting admin login"
-	docker-compose.exe run php drush user:login --uri="$(PROJECT_BASE_URL)":8000
+	docker-compose.exe run php drush user:login --uri="$(PROJECT_BASE_URL)":$(PROJECT_PORT)
 
 cim:
 	@echo "Importing Configuration"
