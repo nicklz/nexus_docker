@@ -60,9 +60,8 @@ install:
 	composer install
 	git clone $(PROJECT_GIT) web
 	docker-compose.exe run php composer install
+	cp settings-templates/settings.php web/docroot/sites/default/settings.php
 
-
-	
 cr:
 	@echo "Clearing Drupal Caches"
 	docker-compose.exe run php drupal cache:rebuild all
