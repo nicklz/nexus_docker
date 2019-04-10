@@ -35,7 +35,10 @@ shell:
 	/mnt/c/programs/Git/git-bash.exe -c "winpty docker.exe exec -ti $(shell docker.exe ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh"
 
 nginx:
-	/mnt/c/programs/Git/git-bash.exe -c "winpty docker.exe exec -ti $(shell docker.exe ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh"
+	/mnt/c/programs/Git/git-bash.exe -c "winpty docker.exe exec  -u 0 -ti $(shell docker.exe ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh"
+
+rsync:
+	/mnt/c/programs/Git/git-bash.exe -c "winpty docker.exe exec -u 0 -ti $(shell docker.exe ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh -c  'apk add rsync && while true ; do rsync -avW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/bin/phpcs --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync;  done'"
 
 dbdump:
 	@echo "Creating Database Dump for $(PROJECT_NAME)..."
