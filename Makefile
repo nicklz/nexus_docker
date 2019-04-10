@@ -59,6 +59,7 @@ install:
 	@echo "Installing dependencies"
 	composer install
 	docker-compose.exe run php composer install
+
 	
 cr:
 	@echo "Clearing Drupal Caches"

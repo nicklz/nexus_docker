@@ -4,5 +4,5 @@
 4. cp .env.example .env && vi .env (Configure fields here)
 5. make install
 6. make up
-7. Add 127.0.0.1 project_name.com to hosts file
+7. Add 127.0.0.1 local.project_name.com to hosts file
 7. Visit project website entered in .env file (example: local.project_name.com:8000)
