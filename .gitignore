@@ -6,7 +6,7 @@
 /web/themes/contrib/
 /web/profiles/contrib/
 /web/libraries/
-
+/web
 # Ignore .sass-cache files
 /.sass-cache/
 
@@ -34,3 +34,6 @@
 # Databases
 /*.sql
 /*.sql.gz
+
+
+composer.lock
