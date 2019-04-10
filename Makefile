@@ -58,7 +58,9 @@ install-source:
 install:
 	@echo "Installing dependencies"
 	composer install
+	git clone $(PROJECT_GIT) web
 	docker-compose.exe run php composer install
+
 
 	
 cr:
