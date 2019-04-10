@@ -34,6 +34,9 @@ ps:
 shell:
 	/mnt/c/programs/Git/git-bash.exe -c "winpty docker.exe exec -ti $(shell docker.exe ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh"
 
+nginx:
+	/mnt/c/programs/Git/git-bash.exe -c "winpty docker.exe exec -ti $(shell docker.exe ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh"
+
 dbdump:
 	@echo "Creating Database Dump for $(PROJECT_NAME)..."
 	docker-compose.exe run php drupal database:dump --file=../db/restore.sql --gz
