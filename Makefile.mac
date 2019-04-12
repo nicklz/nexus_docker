@@ -8,6 +8,13 @@ up:
 	@echo "Starting up containers for for $(PROJECT_NAME)..."
 	docker-compose pull
 	docker-compose up -d --remove-orphans
+	@echo "-------------------------------------------------"
+	@echo "-------------------------------------------------"
+	@echo "-------------------------------------------------"
+	@echo "Visit http://$(PROJECT_BASE_URL):$(PROJECT_PORT)"
+	@echo "-------------------------------------------------"
+	@echo "-------------------------------------------------"
+	@echo "-------------------------------------------------"
 
 down:
 	@echo "Removing containers."
@@ -25,7 +32,13 @@ ps:
 	@docker ps --filter name="$(PROJECT_NAME)*"
 
 shell:
-	docker exec -ti $(shell docker ps --filter name='$(PROJECT_NAME)_php' --format "{{ .ID }}") sh
+	docker exec -ti $(shell docker ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh
+
+nginx:
+	docker exec  -u 0 -ti $(shell docker ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh
+
+rsync:
+	docker exec -u 0 -ti $(shell docker ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh -c  'apk add rsync && while true ; do rsync -avW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/bin/phpcs --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync;  done'
 
 dbdump:
 	@echo "Creating Database Dump for $(PROJECT_NAME)..."
@@ -37,7 +50,7 @@ dbrestore:
 
 uli:
 	@echo "Getting admin login"
-	docker-compose run php drush user:login --uri="$(PROJECT_BASE_URL)":8000
+	docker-compose run php drush user:login --uri="$(PROJECT_BASE_URL)":$(PROJECT_PORT)
 
 cim:
 	@echo "Importing Configuration"
@@ -57,7 +70,10 @@ install-source:
 
 install:
 	@echo "Installing dependencies"
+	composer install
+	git clone $(PROJECT_GIT) web
 	docker-compose run php composer install
+	cp settings-templates/settings.php web/docroot/sites/default/settings.php
 
 cr:
 	@echo "Clearing Drupal Caches"
