@@ -7,7 +7,7 @@ default: up
 up:
 	@echo "Starting up containers for for $(PROJECT_NAME)..."
 	docker-compose$(WINDOWS_SUPPORT) pull
-	docker-compose$(WINDOWS_SUPPORT) up -d --remove-orphans\
+	docker-compose$(WINDOWS_SUPPORT) up -d --remove-orphans
 	@echo "Syncing folders... this may take a few minutes"
 	docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh -c  'apk add rsync && while true ; do rsync -avW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/bin/phpcs --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync;  done' > /dev/null 2>&1 && docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh -c  'apk add rsync && while true ; do rsync -avW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/bin/phpcs --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync;  done' > /dev/null 2>&1
 	@echo "-------------------------------------------------"
