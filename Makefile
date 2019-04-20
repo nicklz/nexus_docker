@@ -9,7 +9,13 @@ up:
 	docker-compose$(WINDOWS_SUPPORT) pull
 	docker-compose$(WINDOWS_SUPPORT) up -d --remove-orphans
 	@echo "Syncing folders... this may take a few minutes"
-	docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh -c  'apk add rsync && while true ; do rsync -avW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/bin/phpcs --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync;  done' > /dev/null 2>&1 && docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh -c  'apk add rsync && while true ; do rsync -avW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/bin/phpcs --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync;  done' > /dev/null 2>&1
+	docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh -c  'apk add rsync'
+	docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh -c  'apk add rsync'
+
+
+	while true; do make rsync; done;
+
+
 	@echo "-------------------------------------------------"
 	@echo "-------------------------------------------------"
 	@echo "-------------------------------------------------"
@@ -21,6 +27,10 @@ up:
 down:
 	@echo "Removing containers."
 	docker-compose$(WINDOWS_SUPPORT) down
+
+rsync:
+	docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh -c  'rsync -aW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/zendframework/zend-escaper/doc  --exclude vendor/zendframework/zend-feed/doc --exclude vendor/zendframework/zend-stdlib/doc  --exclude vendor/bin/phpcs --exclude vendor/bin --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync ' && docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh -c  'rsync -aW --inplace --no-compress --delete --exclude node_modules --exclude .git --exclude vendor/bin/phpcbf --exclude vendor/zendframework/zend-escaper/doc  --exclude vendor/zendframework/zend-feed/doc --exclude vendor/zendframework/zend-stdlib/doc  --exclude vendor/bin/phpcs --exclude vendor/bin --exclude vendor/bin/phpunit --exclude vendor/bin/simple-phpunit /var/www/html/web /rsync '
+
 
 stop:
 	@echo "Stopping containers for $(PROJECT_NAME)..."
