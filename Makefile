@@ -11,11 +11,7 @@ up:
 	@echo "Syncing folders... this may take a few minutes"
 	docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_nginx' --format '{{ .ID }}') sh -c  'apk add rsync'
 	docker$(WINDOWS_SUPPORT) exec -u 0 -ti $(shell docker$(WINDOWS_SUPPORT) ps --filter name='$(PROJECT_NAME)_php' --format '{{ .ID }}') sh -c  'apk add rsync'
-
-
-	while true; do make rsync; done;
-
-
+	
 	@echo "-------------------------------------------------"
 	@echo "-------------------------------------------------"
 	@echo "-------------------------------------------------"
@@ -23,6 +19,12 @@ up:
 	@echo "-------------------------------------------------"
 	@echo "-------------------------------------------------"
 	@echo "-------------------------------------------------"
+
+
+	while true; do make rsync; done;
+
+
+
 
 down:
 	@echo "Removing containers."
