@@ -8,3 +8,5 @@
 6. make up
 7. Add 127.0.0.1 local.projectname.com to hosts file
 8. Visit project website entered in .env file (example: local.projectname.com:8003)
+
+nicklz22
